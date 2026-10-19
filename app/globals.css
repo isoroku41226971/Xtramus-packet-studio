@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/*
+ * Color values are taken directly from the XMNT web app's ui/style.css (each one
+ * checked against the actual file). The whole site is locked to the light theme and
+ * does not follow the system dark mode, the same as the XMNT web app's pages.
+ */
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --brand: #15a8de;
+  --brand-deep: #0e5081;
+  --brand-light: #5addfc;
+  --card-primary: #e8f7fd;
+  --card-primary-hover: #cceefa;
+  --card-deep: #e8f4fd;
+  --card-deep-hover: #cce6fa;
+  --warn: #c8a23c;
+  --danger: #c8756a;
+  --border-neutral: #e9ebed;
+  --surface-tint: #f9fafb;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-light: var(--brand-light);
+  --color-card-primary: var(--card-primary);
+  --color-card-primary-hover: var(--card-primary-hover);
+  --color-card-deep: var(--card-deep);
+  --color-card-deep-hover: var(--card-deep-hover);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-border-neutral: var(--border-neutral);
+  --color-surface-tint: var(--surface-tint);
+  --font-heading: var(--font-roboto), var(--font-noto-sans-tc), "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --font-sans: var(--font-roboto), var(--font-huninn), var(--font-noto-sans-tc), "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  /* Like the XMNT web app, no monospace font is loaded: 'Roboto Mono' is only a fallback
+     name in the stack and is not loaded through next/font, so in practice it usually
+     falls back to ui-monospace/Consolas. The XMNT web app's --font-mono is identical. */
+  --font-mono: ui-monospace, "Roboto Mono", Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+/* Key headings use Noto Sans TC rather than Huninn: the same
+   `h1, h3 { font-family: var(--font-heading); }` rule as the XMNT web app's ui/style.css. */
+h1, h3 {
+  font-family: var(--font-heading);
+}
+
+/* --- home page hero: decorative shapes + cursor-following glow --- */
+.home-hero { position: relative; overflow: hidden; }
+/* A uniform 18px gap, like the XMNT web app's .home-content: the h1, tagline, description
+   and cards are all direct flex children of this layer and share one spacing rhythm.
+   .home-fullname's negative margin-top only pulls it up a little within that 18px; it is
+   not a separate spacing system. */
+.home-content { position: relative; z-index: 1; gap: 18px; }
+
+.home-deco { position: absolute; z-index: 0; pointer-events: none; }
+.home-deco-circle { width: 320px; height: 320px; border-radius: 50%; background: var(--brand);
+                     opacity: .14; top: -130px; left: -90px; }
+.home-deco-square { width: 190px; height: 190px; border-radius: 26px; background: var(--brand-light);
+                     opacity: .16; bottom: -55px; right: -45px; transform: rotate(20deg); }
+
+.home-cursor-glow { width: 260px; height: 260px; border-radius: 46px;
+                     background: rgba(90, 221, 252, .16);
+                     top: 0; left: 0; margin: -130px 0 0 -130px;
+                     opacity: 0; transition: opacity .3s ease; }
+
+/* Like the XMNT web app's .home h1 (52px/700/letter-spacing .04em): this selector fully owns
+   size, weight and letter spacing. The JSX keeps only font-heading (the font family), and
+   Tailwind classes like tracking-tight are no longer put on the h1, so the two never both try
+   to set font-size/font-weight/letter-spacing. */
+.home-hero h1 { font-size: 52px; font-weight: 700; letter-spacing: .04em; margin: 0; }
+
+.home-hero h1::after { content: ''; display: block; width: 64px; height: 6px;
+                        background: var(--brand); border-radius: 3px; margin: 14px auto 0; }
+
+/* The full description under the brand name, like the XMNT web app's .home-fullname
+   ("Xtramus Modular Network Testing" under "XMNT"), in the same small, uppercase,
+   letter-spaced style. .home-content uses an 18px flex gap (as in the XMNT web app), and a
+   negative margin-top pulls this line closer to the title's decorative rule than the
+   description below it. Flex gaps and margins add up rather than collapsing like block
+   margins, so the negative value subtracts predictably from the 18px: -14px (18-14 = 4px)
+   leaves a small gap below the rule without overlapping it, clearly closer to the title
+   than the 18px below. */
+.home-fullname { font-size: 13px; font-weight: 600; text-transform: uppercase;
+                  letter-spacing: .12em; color: var(--brand); margin-top: -14px; }
+
+/* The description line right under the title, like the XMNT web app's .home-subtitle (17px)
+   combined with .muted (opacity .6). There is no shared faded-text class like .muted here,
+   so the combined result (17px at 60% opacity) goes into this one class instead of adding a
+   shared class for a single use. */
+.home-subtitle { font-size: 17px; opacity: .6; }
+
+/* --- workspace tab bar and layout (styles ported from the XMNT web app) --- */
+.tabs { display: flex; gap: 4px; }
+.tab { border: none; border-radius: 4px; padding: 7px 16px; opacity: .6;
+       background: transparent; font: inherit; cursor: pointer;
+       transition: opacity .2s ease, background-color .2s ease; }
+.tab:hover { opacity: 1; }
+.tab.on { background: rgba(127, 127, 127, .14); font-weight: 500; opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .tab { transition: none; }
+}
+
+/* align-items is flex-start, not center: the import button has a drop zone next to it that
+   is taller than the button, and center would push the button down out of line with the
+   add-packet button. */
+.actions { display: flex; gap: 8px; align-items: flex-start; }
+.divider { display: flex; justify-content: center; padding: 6px 0; }
+.self-end { align-self: flex-end; }
+
+.primary { background: var(--brand); color: #fff; border: none; border-radius: 8px;
+           padding: 7px 16px; font-weight: 600; font: inherit; cursor: pointer;
+           transition: transform .2s ease, background-color .2s ease; }
+.primary:hover { background: var(--brand-deep); transform: scale(1.05); }
+@media (prefers-reduced-motion: reduce) {
+  .primary { transition: none; }
+}
+
+/* --- site-wide base styles for buttons (like the XMNT web app's button {}) and dialogs
+   (like its dialog {}), placed in @layer base. Tailwind generates all utility classes in
+   @layer utilities, and between cascade layers the later-declared layer wins regardless of
+   specificity; utilities come after base, so individual buttons can override color, padding
+   or radius (border-warn, px-4, ...). Left unlayered at the top level, these rules would
+   outrank every layer and override the Tailwind classes on every <button>, however specific.
+   This file's own classes such as .primary/.tab stay unlayered, which naturally outranks
+   any layer, so they are unaffected. --- */
+@layer base {
+  button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--border-neutral);
+    background: #fff;
+    padding: 3px 10px;
+    transition: transform .2s ease, background-color .2s ease, border-color .2s ease;
+  }
+  button:hover {
+    border-color: var(--brand);
+    background: var(--surface-tint);
+    transform: scale(1.05);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+  }
+
+  dialog {
+    border: 1px solid rgba(127, 127, 127, .4);
+    border-radius: 8px;
+  }
+  dialog::backdrop {
+    background: rgba(0, 0, 0, .45);
+  }
+}
+
+/* Buttons in the editor dialog (dialog#editor) keep the hover color/border shift but not the
+   scale-up: it is a dense form, and every control jumping as the pointer passes over would be
+   distracting, so color feedback is enough. Same convention as the XMNT web app
+   (dialog#editor button:hover). Deliberately unlayered so it outranks @layer base's
+   button:hover without a specificity contest; it only affects the editor dialog. */
+dialog#editor button:hover {
+  transform: none;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* --- custom dropdown (replaces native select; modeled on the XMNT web app's .listbox* rules) --- */
+.listbox { position: relative; flex: 1; }
+.listbox-trigger { width: 100%; display: flex; align-items: center;
+                   justify-content: space-between; gap: 8px; text-align: left;
+                   font: inherit; padding: 3px 6px; border-radius: 4px;
+                   border: 1px solid rgba(127, 127, 127, .4);
+                   background: transparent; color: inherit; cursor: pointer; }
+.listbox-chevron { opacity: .6; transition: transform .15s ease; flex-shrink: 0; }
+.listbox.open .listbox-chevron { transform: rotate(180deg); }
+
+/* position:fixed with coordinates computed in JS, so the dialog's overflow-y:auto cannot clip it */
+.listbox-panel { position: fixed; z-index: 20; margin: 0; padding: 4px;
+                 list-style: none; border-radius: 6px; max-height: min(280px, 40vh);
+                 overflow-y: auto; background: Canvas; color: CanvasText;
+                 border: 1px solid rgba(127, 127, 127, .4);
+                 box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+                 opacity: 0; transform: translateY(-4px) scaleY(.96); transform-origin: top;
+                 transition: opacity .12s ease, transform .12s ease; }
+/* The open state is marked on the panel itself, not via a .listbox.open descendant selector:
+   while open the panel is portaled outside wrap (into the dialog or body), so it is not a DOM
+   descendant of wrap. */
+.listbox-panel.open { opacity: 1; transform: translateY(0) scaleY(1); }
+.listbox-option { padding: 5px 8px; border-radius: 4px; cursor: pointer; }
+/* current selection: background color rather than bold, the same "currently selected" language as .tab.on */
+.listbox-option[aria-selected=true] { background: rgba(127, 127, 127, .14); }
+/* the item under keyboard focus: brand blue, distinguishable even combined with the rule above */
+.listbox-option.active { background: color-mix(in oklab, var(--brand) 16%, transparent); }
+.listbox-trigger:disabled { opacity: .4; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .listbox-chevron, .listbox-panel { transition: none; }
+}
+
+/* --- home -> workspace loading transition (modeled on the XMNT web app's .loading-transition*) --- */
+.loading-transition { position: fixed; inset: 0; z-index: 50;
+                       background: rgba(0, 0, 0, .45);
+                       display: flex; align-items: center; justify-content: center; }
+.loading-transition-box { background: #fff; border: 2px solid var(--brand); border-radius: 10px;
+                           padding: 28px 40px; display: flex; flex-direction: column;
+                           align-items: center; gap: 10px;
+                           box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+.loading-transition-brand { color: var(--brand); font-size: 18px; font-weight: 600;
+                             animation: loading-transition-breathe 1.6s ease-in-out infinite; }
+.loading-transition-msg { color: var(--foreground); opacity: .6; font-size: 12px; }
+
+@keyframes loading-transition-breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .6; transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-transition-brand { animation: none; }
+}
