@@ -50,7 +50,7 @@ types/               File System Access API type additions
 - **Byte-exact packets.** Layers are checked byte for byte against known-good reference packets, and every layer stack must survive `build → decode → build` unchanged.
 - **File formats.** PCAP and PCAPNG headers are checked byte for byte against the format specifications, and importing a capture and exporting it again yields an identical file.
 - **Cross-checked with Wireshark and Scapy.** Exported captures open cleanly in Wireshark, which reports their checksums as valid. Generated Scapy scripts were run with `sendp(...)` replaced by `wrpcap(...)`; for six packet types, including the DHCP exchange, the capture Scapy wrote matched Packet Studio's own export byte for byte.
-- **Manual testing in the browser.** Each feature was also tested by hand: building packets from templates, editing fields and watching the decode tree and hex view update, switching layers without losing entered values, building send sequences, saving and reopening `.psproj` projects, and importing captures by drag and drop.
+- **Manual testing in the browser.** Each feature was also tested by hand: building packets from templates, editing fields and watching the decode tree and hex view update, switching layers without losing entered values, building send sequences, saving and reopening `.psproj` projects, and importing captures by drag and drop. Exported files were also opened in Wireshark and checked by hand to confirm that every packet matches what was built in the editor.
 - `npm run typecheck`, `npm run lint` and `npm run build` all pass.
 
 ## Running locally
