@@ -6,7 +6,7 @@ A browser-based tool for building, editing and previewing network packets and ex
 
 ## Why it exists
 
-Testing how a switch or other network device handles traffic often calls for exact packets: a particular address, a field that is wrong on purpose, or a run of packets whose addresses step through a range. Written by hand in a script, such packets are slow to produce and easy to get subtly wrong, and a wrong length or checksum can make a test measure something other than intended. Packet Studio builds them visually: every field is editable, the decode tree and hex view show the exact bytes that will be written, and the result is a standard capture file that traffic generators and replay tools can use, such as the PCAP replay test in the companion XMNT web app.
+Testing how a switch or other network device handles traffic often calls for exact packets: a particular address, a field that is wrong on purpose, or a run of packets whose addresses step through a range. Written by hand in a script, such packets are slow to produce and easy to get subtly wrong, and a wrong length or checksum can make a test measure something other than intended. Packet Studio builds them visually: every field is editable, the decode tree and hex view show the exact bytes that will be written, and the result is a standard capture file that traffic generators and replay tools can use, such as the PCAP replay test in the companion [XMNT web app](https://github.com/isoroku41226971/Xtramus-Modular-Network-Testing/tree/main/web-app).
 
 ## Features
 
@@ -66,6 +66,6 @@ Then open <http://localhost:3000>. `npm run build` produces a production build a
 ## Notes
 
 - The UI text is in Traditional Chinese, the language of the tool's users; code, comments and documentation are in English.
-- The visual design (colors, header, dropdown, home page cards) follows the author's companion project, the XMNT web app (a separate repository). Comments that mention "the XMNT web app" refer to files under that project's `web-app/ui/` folder.
+- The visual design (colors, header, dropdown, home page cards) follows the author's companion project, the [XMNT web app](https://github.com/isoroku41226971/Xtramus-Modular-Network-Testing/tree/main/web-app) (a separate repository). Comments that mention "the XMNT web app" refer to files under that project's `web-app/ui/` folder.
 - Developed during an internship at Xtramus (July–August 2026).
 - No open-source license is granted; all rights are reserved.
